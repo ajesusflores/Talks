@@ -11,5 +11,5 @@ Here you'll find the slides and code examples
 
 #### Code Examples
 
-[ChooseMyWallpaper] (https://github.com/ajesusflores/Talks/tree/master/MachineLearning/ChooseMyWallpaper/demo)
+[ChooseMyWallpaper](https://github.com/ajesusflores/Talks/tree/master/MachineLearning/ChooseMyWallpaper/demo)
 
