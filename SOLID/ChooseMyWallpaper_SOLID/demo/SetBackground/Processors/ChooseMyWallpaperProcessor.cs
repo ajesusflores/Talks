@@ -8,12 +8,12 @@ namespace SetBackground.Processors
 {
     internal class ChooseMyWallpaperProcessor
     {
-        private GetSongProvider getSongProvider;
-        private GetLyricsProvider getLyricsProvider;
-        private LanguageProvider languageProvider;
-        private ImageSearchProvider imageSearchProvider;
+        private IGetSongProvider getSongProvider;
+        private IGetLyricsProvider getLyricsProvider;
+        private ILanguageProvider languageProvider;
+        private IImageSearchProvider imageSearchProvider;
 
-        public ChooseMyWallpaperProcessor(GetSongProvider getSongProvider, GetLyricsProvider getLyricsProvider, LanguageProvider languageProvider, ImageSearchProvider imageSearchProvider)
+        public ChooseMyWallpaperProcessor(IGetSongProvider getSongProvider, IGetLyricsProvider getLyricsProvider, ILanguageProvider languageProvider, IImageSearchProvider imageSearchProvider)
         {
             this.getSongProvider = getSongProvider;
             this.getLyricsProvider = getLyricsProvider;

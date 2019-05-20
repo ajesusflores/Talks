@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SetBackground.Processors
 {
-    internal class LanguageProvider
+    internal class LanguageProvider : ILanguageProvider
     {
         private MicrosoftTextAnalytics msText;
 
@@ -16,15 +16,14 @@ namespace SetBackground.Processors
             msText = new MicrosoftTextAnalytics(MSAnalyticsKey);
         }
 
-        internal string GetKeyPhraseFromLyrics(string lyrics)
+        public string GetKeyPhraseFromLyrics(string lyrics)
         {
             var songLanguage = msText.GetLanguage(lyrics);
             var songKeys = msText.ExtractKeyPhrases(lyrics, songLanguage);
             return GetTextToSearchImage(songKeys);
-            
         }
 
-        internal string GetTextToSearchImage(string[] keys)
+        private string GetTextToSearchImage(string[] keys)
         {
             if (!keys.Any())
                 return string.Empty;

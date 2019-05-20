@@ -51,11 +51,13 @@ namespace SetBackground
             var flickrKey = photosConfig["FlickrAPI"];
             var pexelsAPI = photosConfig["PexelsAPI"];
 
-            ChooseMyWallpaperProcessor processor = new ChooseMyWallpaperProcessor(
-                new GetSongProvider(spotifyRedirectUrl, spotifRedirectPort, spotifyKey), 
-                new GetLyricsProvider(musicXMatchKey), 
-                new LanguageProvider(MSAnalyticsKey), 
-                new ImageSearchProvider(flickrKey, pexelsAPI));
+            // Implementation based on contracts (Interfaces)
+            IGetSongProvider songProvider = new GetSongProvider(spotifyRedirectUrl, spotifRedirectPort, spotifyKey);
+            IGetLyricsProvider lyricsProvider = new GetLyricsProvider(musicXMatchKey);
+            ILanguageProvider languageProvider = new LanguageProvider(MSAnalyticsKey);
+            IImageSearchProvider imageSearchProvider = new ImageSearchProvider(flickrKey, pexelsAPI);
+
+            ChooseMyWallpaperProcessor processor = new ChooseMyWallpaperProcessor(songProvider, lyricsProvider, languageProvider, imageSearchProvider);
 
             Console.WriteLine("==========================S T A R T==========================");
 

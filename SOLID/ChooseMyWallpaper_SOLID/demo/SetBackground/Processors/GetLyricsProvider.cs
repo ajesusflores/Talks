@@ -7,7 +7,7 @@ using SetBackground.LyricsAPI;
 
 namespace SetBackground.Processors
 {
-    internal class GetLyricsProvider
+    internal class GetLyricsProvider : IGetLyricsProvider
     {
         private MusicXMatchAPI musicMatch;
 
@@ -16,7 +16,7 @@ namespace SetBackground.Processors
             musicMatch = new MusicXMatchAPI(musicXMatchKey);
         }
 
-        internal string GetLyrics(string songName, string artistName)
+        public string GetLyrics(string songName, string artistName)
         {
             var lyrics = musicMatch.GetLyricsAndLanguage(songName, artistName);
 

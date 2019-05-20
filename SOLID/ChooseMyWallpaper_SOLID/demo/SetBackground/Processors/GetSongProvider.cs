@@ -8,7 +8,7 @@ using SpotifyAPI.Web.Enums;
 
 namespace SetBackground.Processors
 {
-    internal class GetSongProvider
+    internal class GetSongProvider : IGetSongProvider
     {
         private SpotifyWeb spotifyClient;
 
@@ -17,7 +17,7 @@ namespace SetBackground.Processors
             spotifyClient = new SpotifyWeb(redirectUrl, redirectPort, spotifyKey, Scope.UserReadPlaybackState);
         }
         
-        internal SongResult GetCurrentSong()
+        public SongResult GetCurrentSong()
         {
             return spotifyClient.GetCurrentSong();
         }

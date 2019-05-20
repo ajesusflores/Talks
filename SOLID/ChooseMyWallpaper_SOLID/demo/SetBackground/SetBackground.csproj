@@ -92,6 +92,10 @@
     <Compile Include="Processors\ChooseMyWallpaperProcessor.cs" />
     <Compile Include="Processors\GetLyricsProvider.cs" />
     <Compile Include="Processors\GetSongProvider.cs" />
+    <Compile Include="Processors\IGetLyricsProvider.cs" />
+    <Compile Include="Processors\IGetSongProvider.cs" />
+    <Compile Include="Processors\IImageSearchProvider.cs" />
+    <Compile Include="Processors\ILanguageProvider.cs" />
     <Compile Include="Processors\ImageSearchProvider.cs" />
     <Compile Include="Processors\LanguageProvider.cs" />
     <Compile Include="Program.cs" />

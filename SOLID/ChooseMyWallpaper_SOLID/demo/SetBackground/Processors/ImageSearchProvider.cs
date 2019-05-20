@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace SetBackground.Processors
 {
-    internal class ImageSearchProvider
+    internal class ImageSearchProvider : IImageSearchProvider
     {
         private FlickrAPI flickrApi;
         private PexelAPI pexelApi;
