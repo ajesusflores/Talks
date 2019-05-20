@@ -89,6 +89,11 @@
     <Compile Include="PhotographyAPI\FlickrAPI.cs" />
     <Compile Include="PhotographyAPI\IPhotographyProvider.cs" />
     <Compile Include="PhotographyAPI\PexelAPI.cs" />
+    <Compile Include="Processors\ChooseMyWallpaperProcessor.cs" />
+    <Compile Include="Processors\GetLyricsProvider.cs" />
+    <Compile Include="Processors\GetSongProvider.cs" />
+    <Compile Include="Processors\ImageSearchProvider.cs" />
+    <Compile Include="Processors\LanguageProvider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

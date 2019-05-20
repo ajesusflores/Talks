@@ -18,13 +18,14 @@ using System.Runtime.InteropServices;
 using System.Drawing;
 using Microsoft.Win32;
 using System.Windows.Forms;
+using SetBackground.Processors;
 
 namespace SetBackground
 {
     class Program
     {
         static TimeSpan startTime = TimeSpan.Zero;
-        static TimeSpan interval = TimeSpan.FromSeconds(25);
+        static TimeSpan interval = TimeSpan.FromSeconds(35);
 
         const int SPI_SETDESKWALLPAPER = 20;
         const int SPIF_UPDATEINIFILE = 0x01;
@@ -50,100 +51,21 @@ namespace SetBackground
             var flickrKey = photosConfig["FlickrAPI"];
             var pexelsAPI = photosConfig["PexelsAPI"];
 
-            var lastSong = string.Empty;
+            ChooseMyWallpaperProcessor processor = new ChooseMyWallpaperProcessor(
+                new GetSongProvider(spotifyRedirectUrl, spotifRedirectPort, spotifyKey), 
+                new GetLyricsProvider(musicXMatchKey), 
+                new LanguageProvider(MSAnalyticsKey), 
+                new ImageSearchProvider(flickrKey, pexelsAPI));
 
             Console.WriteLine("==========================S T A R T==========================");
 
             var timer = new System.Threading.Timer((e) =>
             {
                 Console.WriteLine(Environment.NewLine + "**New Iteration**");
-                var song = GetCurrentSong(spotifyRedirectUrl, spotifRedirectPort, spotifyKey);
-                if(song != null && song.Title != null)
-                {
-                    if (lastSong != song.Title)
-                    {
-                        lastSong = song.Title;
-                        Console.WriteLine($"{song.Artist} - {song.Title}: " + Environment.NewLine);
-
-                        var lyrics = GetLyricsAndLanguage(musicXMatchKey, lastSong, song.Artist);
-
-                        lyrics.Item1 = lyrics.Item1.Replace("\n", " ").Replace("  ", " ").ToLower();
-                        Console.WriteLine(lyrics.Item1);
-                        Console.WriteLine(lyrics.Item2 + Environment.NewLine);
-
-                        var songKeys = ExtractKeyPhrasesFromLyrics(MSAnalyticsKey, lyrics.Item1);
-
-                        Console.WriteLine(string.Join(Environment.NewLine, songKeys) + Environment.NewLine);
-
-                        var textToSearch = GetTextToSearchImage(songKeys);
-                        textToSearch = string.IsNullOrEmpty(textToSearch) ? song.Title : textToSearch;
-
-                        var photoUrl = GetPhotoUrl(flickrKey, pexelsAPI, textToSearch);
-                        Console.WriteLine($"{textToSearch}: {photoUrl}");
-
-                        SetWallpaper(photoUrl);
-                    }
-                    else
-                        Console.WriteLine("no new song");
-                }
-                    else
-                    Console.WriteLine("no song");
+                SetWallpaper(processor.ChooseMyWallpaper());
             }, null, startTime, interval);
 
             Console.ReadLine();
-        }
-
-        static SongResult GetCurrentSong(string spotifyRedirectUrl, int spotifyRedirectPort, string spotifyKey)
-        {
-            var spotify = new SpotifyWeb(spotifyRedirectUrl, spotifyRedirectPort, spotifyKey, Scope.UserReadPlaybackState);
-            return spotify.GetCurrentSong();
-        }
-
-        static (string, string) GetLyricsAndLanguage(string musicXMatchKey, string songName, string artistName)
-        {
-            var musicMatch = new MusicXMatchAPI(musicXMatchKey);
-            var lyrics = musicMatch.GetLyricsAndLanguage(songName, artistName);
-
-            if (string.IsNullOrEmpty(lyrics.Item1))
-            {
-                Console.WriteLine("*2nd Call to lyrics Service");
-                lyrics = musicMatch.GetLyricsAndLanguage(songName, null);
-            }
-
-            return lyrics;
-        }
-
-        static string GetTextToSearchImage(string[] keys)
-        {
-            if (!keys.Any())
-                return string.Empty;
-
-            var result = keys.FirstOrDefault(x => x.Contains(" "));
-
-            return /*result ??*/ keys[0].Contains(" ") ?
-                                keys[0] :
-                                keys[1].Contains(" ") ?
-                                keys[1] :
-                                string.Format($"{keys[0]} {keys[1]}");
-        }
-
-        static string[] ExtractKeyPhrasesFromLyrics(string MSAnalyticsKey, string lyrics)
-        {
-            var msText = new MicrosoftTextAnalytics(MSAnalyticsKey);
-            var songLanguage = msText.GetLanguage(lyrics);
-            return msText.ExtractKeyPhrases(lyrics, songLanguage);
-        }
-
-        static string GetPhotoUrl(string flickrKey, string pexelsAPI, string textToSearch)
-        {
-            var flickr = new FlickrAPI(flickrKey);
-            var pexels = new PexelAPI(pexelsAPI);
-
-            string photo = pexels.GetImageUrlFromText(textToSearch);
-            if (string.IsNullOrEmpty(photo))
-                photo = flickr.GetImageUrlFromText(textToSearch);
-
-            return photo;
         }
 
         static void SetWallpaper(string imageUrl)
